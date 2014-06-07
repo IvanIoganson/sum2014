@@ -1,5 +1,5 @@
 /* FILENAME: ANIM.H
- * PROGRAMMER: VG4
+ * PROGRAMMER: II2
  * PURPOSE: Globe project declaration module.
  * LAST UPDATE: 07.06.2014
  */
@@ -10,13 +10,15 @@
 #include "image.h"
 
 /* Максимальное количество элементов анимации */
-#define VG4_MAX_UNITS 3000
+#define II2_MAX_UNITS 3000
+
+#define II2_PI 3.1415926535897932384626433832795
 
 /* Объявление типа объектов анимации "вперед" */
-typedef struct tagvg4UNIT vg4UNIT;
+typedef struct tagii2UNIT ii2UNIT;
 
 /* Структура хранения контекста анимации */
-typedef struct tagvg4ANIM
+typedef struct tagii2ANIM
 {
   HWND hWnd;          /* Окно вывода */
   INT W, H;           /* Размер окна вывода */
@@ -24,7 +26,7 @@ typedef struct tagvg4ANIM
   HDC hDC;            /* Контекст вывода */
 
   /* Массив элементов анимации и их количество */
-  vg4UNIT *Units[VG4_MAX_UNITS]; 
+  ii2UNIT *Units[II2_MAX_UNITS]; 
   INT NumOfUnits;
 
   /* Подсистема синхронизации */
@@ -39,31 +41,31 @@ typedef struct tagvg4ANIM
 
   /* Подсистема ввода */
   BYTE Keys[256];     /* Сотояние клавиш клавиатуры и мыши */
-} vg4ANIM;
+} ii2ANIM;
 
 /* Базовые поля объекта анимации:
  * - размер структуры для наследования
  *     INT Size;
  * - указатель на функцию инициализации
- *     VOID (*Init)( vg4UNIT *Unit, vg4ANIM *Ani );
+ *     VOID (*Init)( ii2UNIT *Unit, ii2ANIM *Ani );
  * - указатель на функцию деинициализации
- *     VOID (*Close)( vg4UNIT *Unit, vg4ANIM *Ani );
+ *     VOID (*Close)( ii2UNIT *Unit, ii2ANIM *Ani );
  * - указатель на функцию обновления межкадровых параметров
- *     VOID (*Response)( vg4UNIT *Unit, vg4ANIM *Ani );
+ *     VOID (*Response)( ii2UNIT *Unit, ii2ANIM *Ani );
  * - указатель на функцию построения
- *     VOID (*Render)( vg4UNIT *Unit, vg4ANIM *Ani );
+ *     VOID (*Render)( ii2UNIT *Unit, ii2ANIM *Ani );
  */
-#define VG4_UNIT_BASE_FIELDS \
+#define II2_UNIT_BASE_FIELDS \
   INT Size;                                          \
-  VOID (*Init)( vg4UNIT *Unit, vg4ANIM *Ani );       \
-  VOID (*Close)( vg4UNIT *Unit, vg4ANIM *Ani );      \
-  VOID (*Response)( vg4UNIT *Unit, vg4ANIM *Ani );   \
-  VOID (*Render)( vg4UNIT *Unit, vg4ANIM *Ani )
+  VOID (*Init)( ii2UNIT *Unit, ii2ANIM *Ani );       \
+  VOID (*Close)( ii2UNIT *Unit, ii2ANIM *Ani );      \
+  VOID (*Response)( ii2UNIT *Unit, ii2ANIM *Ani );   \
+  VOID (*Render)( ii2UNIT *Unit, ii2ANIM *Ani )
 
 /* Базовый тип объекта анимации */
-struct tagvg4UNIT
+struct tagii2UNIT
 {
-  VG4_UNIT_BASE_FIELDS; /* Базовые поля */
+  II2_UNIT_BASE_FIELDS; /* Базовые поля */
 };
 
 /***
@@ -71,36 +73,36 @@ struct tagvg4UNIT
  ***/
 
 /* Функция инициализации анимации */
-VOID VG4_AnimInit( HWND hWnd );
+VOID II2_AnimInit( HWND hWnd );
 
 /* Функция деинициализации анимации */
-VOID VG4_AnimClose( VOID );
+VOID II2_AnimClose( VOID );
 
 /* Функция обработки изменения размера области вывода */
-VOID VG4_AnimResize( INT W, INT H );
+VOID II2_AnimResize( INT W, INT H );
 
 /* Функция построения кадра анимации */
-VOID VG4_AnimRender( VOID );
+VOID II2_AnimRender( VOID );
 
 /* Функция вывода кадра анимации */
-VOID VG4_AnimCopyFrame( VOID );
+VOID II2_AnimCopyFrame( VOID );
 
 /* Функция переключения в/из полноэкранного режима
  * с учетом нескольких мониторов */
-VOID VG4_AnimFlipFullScreen( VOID );
+VOID II2_AnimFlipFullScreen( VOID );
 
 /* Функция установки паузы анимации */
-VOID VG4_AnimSetPause( BOOL NewPauseFlag );
+VOID II2_AnimSetPause( BOOL NewPauseFlag );
 
 /***
  * Функции обработки объектов анимации
  ***/
 
 /* Функция добавления в систему объекта анимации */
-VOID VG4_AnimAddUnit( vg4UNIT *Unit );
+VOID II2_AnimAddUnit( ii2UNIT *Unit );
 
 /* Функция создания объекта анимации */
-vg4UNIT * VG4_AnimUnitCreate( INT Size );
+ii2UNIT *II2_AnimUnitCreate( INT Size );
 
 #endif /* __ANIM_H_ */
 

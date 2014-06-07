@@ -206,6 +206,10 @@
 				Name="Unit Samples"
 				>
 				<File
+					RelativePath=".\CLOCK.C"
+					>
+				</File>
+				<File
 					RelativePath=".\SAMPLE.C"
 					>
 				</File>

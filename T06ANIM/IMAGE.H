@@ -1,5 +1,5 @@
 /* FILENAME: IMAGE.H
- * PROGRAMMER: VG4
+ * PROGRAMMER: II2
  * PURPOSE: Image handle declaration module.
  * LAST UPDATE: 06.06.2014
  */

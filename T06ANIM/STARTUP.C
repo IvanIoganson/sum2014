@@ -1,5 +1,5 @@
 /* FILENAME: STARTUP.C
- * PROGRAMMER: VG4
+ * PROGRAMMER: II2
  * PURPOSE: Animation startup module
  * LAST UPDATE: 07.06.2014
  */
@@ -72,8 +72,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /*** Добавление объектов ***/
   for (i = 0; i < 30 * 30; i++)
-    VG4_AnimAddUnit(VG4_CowUnitCreate());
-  VG4_AnimAddUnit(VG4_InfoUnitCreate());
+    II2_AnimAddUnit(II2_CowUnitCreate());
+  II2_AnimAddUnit(II2_InfoUnitCreate());
 
   /* Запуск цикла обработки сообщений */
   while (GetMessage(&msg, NULL, 0, 0))
@@ -116,13 +116,14 @@ LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
     return 0;
   case WM_CREATE:
     SetTimer(hWnd, 30, 1, NULL);
-    VG4_AnimInit(hWnd);
+    II2_AnimInit(hWnd);
+    II2_AnimAddUnit(II2_ClockUnitCreate());
     return 0;
   case WM_SIZE:
-    VG4_AnimResize(LOWORD(lParam), HIWORD(lParam));
+    II2_AnimResize(LOWORD(lParam), HIWORD(lParam));
   case WM_TIMER:
-    VG4_AnimRender();
-    VG4_AnimCopyFrame();
+    II2_AnimRender();
+    II2_AnimCopyFrame();
     return 0;
   case WM_CHAR:
     switch ((CHAR)wParam)
@@ -131,10 +132,10 @@ LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
       DestroyWindow(hWnd);
       return 0;
     case 'f':
-      VG4_AnimFlipFullScreen();
+      II2_AnimFlipFullScreen();
       return 0;
     case 'p':
-      VG4_AnimSetPause(pause = !pause);
+      II2_AnimSetPause(pause = !pause);
       return 0;
     }
     return 0;
@@ -143,10 +144,10 @@ LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
     EndPaint(hWnd, &ps);
-    VG4_AnimCopyFrame();
+    II2_AnimCopyFrame();
     return 0;
   case WM_DESTROY:
-    VG4_AnimClose();
+    II2_AnimClose();
     PostQuitMessage(0);
     KillTimer(hWnd, 30);
     return 0;

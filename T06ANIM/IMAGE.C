@@ -1,5 +1,5 @@
 /* FILENAME: IMAGE.C
- * PROGRAMMER: VG4
+ * PROGRAMMER: II2
  * PURPOSE: Image handle functions
  * LAST UPDATE: 06.06.2014
  */

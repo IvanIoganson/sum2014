@@ -1,5 +1,5 @@
 /* FILENAME: UNITS.H
- * PROGRAMMER: VG4
+ * PROGRAMMER: II2
  * PURPOSE: Globe project declaration module.
  * LAST UPDATE: 07.06.2014
  */
@@ -10,10 +10,14 @@
 #include "anim.h"
 
 /* Функция создания объекта анимации */
-vg4UNIT * VG4_CowUnitCreate( VOID );
+ii2UNIT * II2_CowUnitCreate( VOID );
 
 /* Функция создания информационного объекта анимации */
-vg4UNIT * VG4_InfoUnitCreate( VOID );
+ii2UNIT * II2_InfoUnitCreate( VOID );
+
+/* Функция создания объекта анимации. */
+ii2UNIT *II2_ClockUnitCreate( VOID );
+
 
 #endif /* __UNITS_H_ */
 
