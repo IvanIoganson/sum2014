@@ -18,6 +18,8 @@ ii2UNIT * II2_InfoUnitCreate( VOID );
 /* Функция создания объекта анимации. */
 ii2UNIT *II2_ClockUnitCreate( VOID );
 
+/* Функция создания объекта анимации. */
+ii2UNIT *II2_PicUnitCreate( CHAR *FNameAnd, CHAR *FNameXor );
 
 #endif /* __UNITS_H_ */
 

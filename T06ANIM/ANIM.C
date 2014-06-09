@@ -9,6 +9,10 @@
 
 #include "anim.h"
 
+#pragma comment(lib, "winmm")
+
+#include <mmsystem.h>
+
 /* Системный контекст анимации */
 static ii2ANIM II2_Anim;
 
@@ -92,6 +96,42 @@ VOID II2_AnimResize( INT W, INT H )
   ReleaseDC(II2_Anim.hWnd, hDC);
 } /* End of 'II2_AnimResize' function */
 
+/* Данные для обработки мыши */
+static INT
+  II2_MouseGlobalX, II2_MouseGlobalY, /* Текущие координаты */
+  II2_MouseXOld, II2_MouseYOld,       /* Сохраненные от прошлого кадра координаты */
+  II2_MouseGlobalWheel;               /* Состояние колеса мыши */
+
+/* Функция обработки захваченных мышинных сообщений.
+ * АРГУМЕНТЫ:
+ *   - код захвата:
+ *       INT Code;
+ *   - параметр сообшения ('word parameter') -
+ *     код сообщения от мыши:
+ *       WPARAM wParam;
+ *   - параметр сообшения ('long parameter') -
+ *     (MSLLHOOKSTRUCT *) для мышинных сообщений;
+ *       LPARAM lParam;
+ * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ:
+ *   (LRESULT) - в зависимости от сообщения.
+ */
+static LRESULT CALLBACK II2_MouseHook( INT Code, WPARAM wParam, LPARAM lParam )
+{
+  MSLLHOOKSTRUCT *hs = (MSLLHOOKSTRUCT *)lParam;
+
+  switch (wParam)
+  {
+  case WM_MOUSEMOVE:
+    II2_MouseGlobalX = hs->pt.x;
+    II2_MouseGlobalY = hs->pt.y;
+    break;
+  case WM_MOUSEWHEEL:
+    II2_MouseGlobalWheel = (SHORT)HIWORD(hs->mouseData);
+    break;
+  }
+  return 0;
+} /* End of 'II2_MouseHook' function */
+
 /* Функция построения кадра анимации.
  * АРГУМЕНТЫ: Нет.
  * ВОЗВРАЩАЕМОЕ ЗНАЧЕНИЕ: Нет.
@@ -100,12 +140,77 @@ VOID II2_AnimRender( VOID )
 {
   INT i;
   LARGE_INTEGER li;
+  POINT pt;
+  static JButs[32], JButsClick[32], JButsOld[32];
 
   /* Обновление ввода */
   GetKeyboardState(II2_Anim.Keys);
   for (i = 0; i < 256; i++)
     II2_Anim.Keys[i] >>= 7;
 
+      /* Джойстик */
+  if ((i = joyGetNumDevs()) > 0)
+  {
+    JOYCAPS jc;
+
+    /* получение общей информации о джостике */
+    if (joyGetDevCaps(JOYSTICKID1, &jc, sizeof(jc)) == JOYERR_NOERROR)
+    {
+      JOYINFOEX ji;
+
+      /* получение текущего состояния */
+      ji.dwSize = sizeof(JOYCAPS);
+      ji.dwFlags = JOY_RETURNALL;
+      if (joyGetPosEx(JOYSTICKID1, &ji) == JOYERR_NOERROR)
+      {
+        /* Кнопки */
+        memcpy(JButsOld, JButs, sizeof(JButs));
+        for (i = 0; i < 32; i++)
+          JButs[i] = (ji.dwButtons >> i) & 1;
+        for (i = 0; i < 32; i++)
+          JButsClick[i] = JButs[i] && !JButsOld[i];
+
+        /* Оси */
+        II2_Anim.JX = II2_JOYST(X);
+        II2_Anim.JY = II2_JOYST(Y);
+        if (jc.wCaps & JOYCAPS_HASZ)
+          II2_Anim.JZ = II2_JOYST(Z);
+        if (jc.wCaps & JOYCAPS_HASR)
+          II2_Anim.JR = II2_JOYST(R);
+        if (jc.wCaps & JOYCAPS_HASU)
+          II2_Anim.JU = II2_JOYST(U);
+
+        /* Point-Of-View */
+        if (jc.wCaps & JOYCAPS_HASPOV)
+        {
+          if (ji.dwPOV == 0xFFFF)
+            II2_Anim.JPOV = 0;
+          else
+            II2_Anim.JPOV = ji.dwPOV / 4500 + 1;
+        }
+      }
+    }
+  }
+
+  /* инициализируем захват сообщений от мыши */
+  SetWindowsHookEx(WH_MOUSE_LL, II2_MouseHook, GetModuleHandle(NULL), 0);
+
+  /* Мышь */
+  /*  колесо */
+  II2_Anim.MsWheel = II2_MouseGlobalWheel / 120;
+  II2_MouseGlobalWheel = 0;
+  /* абсолютная позиция */
+  pt.x = II2_MouseGlobalX;
+  pt.y = II2_MouseGlobalY;
+  ScreenToClient(II2_Anim.hWnd, &pt);
+  II2_Anim.MsX = pt.x;
+  II2_Anim.MsY = pt.y;
+  /* относительное перемещение */
+  II2_Anim.MsDeltaX = II2_MouseGlobalX - II2_MouseXOld;
+  II2_Anim.MsDeltaY = II2_MouseGlobalY - II2_MouseYOld;
+  II2_MouseXOld = II2_MouseGlobalX;
+  II2_MouseYOld = II2_MouseGlobalY;
+  
   /* Обновление таймера */
   II2_Anim.Time = (DBL)clock() / CLOCKS_PER_SEC;
 

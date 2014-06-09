@@ -28,6 +28,12 @@ typedef struct tagii2ANIM
   /* Массив элементов анимации и их количество */
   ii2UNIT *Units[II2_MAX_UNITS]; 
   INT NumOfUnits;
+ 
+  DBL JX, JY, JZ, JR, JU; /* Джостик */
+  INT JPOV;               /* Джостик */
+
+  DBL MsWheel;            /* Колесо мыши */
+  INT MsX, MsY, MsDeltaX, MsDeltaY; /* Местонахождение курсора и розность координат*/
 
   /* Подсистема синхронизации */
   DBL
@@ -61,6 +67,8 @@ typedef struct tagii2ANIM
   VOID (*Close)( ii2UNIT *Unit, ii2ANIM *Ani );      \
   VOID (*Response)( ii2UNIT *Unit, ii2ANIM *Ani );   \
   VOID (*Render)( ii2UNIT *Unit, ii2ANIM *Ani )
+
+#define II2_JOYST(x) (DBL)((INT)((2.0 * (ji.dw##x##pos - jc.w##x##min) / (jc.w##x##max - jc.w##x##min - 1) - 1) * 100)) / 100
 
 /* Базовый тип объекта анимации */
 struct tagii2UNIT

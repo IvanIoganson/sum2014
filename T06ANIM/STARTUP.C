@@ -36,7 +36,6 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   WNDCLASS wc;
   HWND hWnd;
   MSG msg;
-  INT i;
 
   /* Регистрация - создание собственного класса окна */
   wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -71,9 +70,11 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
 
   /*** Добавление объектов ***/
-  for (i = 0; i < 30 * 30; i++)
-    II2_AnimAddUnit(II2_CowUnitCreate());
+  /*for (i = 0; i < 30 * 30; i++)
+    II2_AnimAddUnit(II2_CowUnitCreate());*/
   II2_AnimAddUnit(II2_InfoUnitCreate());
+  II2_AnimAddUnit(II2_ClockUnitCreate());
+  II2_AnimAddUnit(II2_PicUnitCreate("II2_AND.bmp", "II2_XOR.bmp"));
 
   /* Запуск цикла обработки сообщений */
   while (GetMessage(&msg, NULL, 0, 0))
@@ -117,7 +118,6 @@ LRESULT CALLBACK MainWindowFunc( HWND hWnd, UINT Msg,
   case WM_CREATE:
     SetTimer(hWnd, 30, 1, NULL);
     II2_AnimInit(hWnd);
-    II2_AnimAddUnit(II2_ClockUnitCreate());
     return 0;
   case WM_SIZE:
     II2_AnimResize(LOWORD(lParam), HIWORD(lParam));
