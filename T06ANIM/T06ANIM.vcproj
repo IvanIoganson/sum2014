@@ -191,6 +191,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MATR.C"
+				>
+			</File>
+			<File
+				RelativePath=".\MATR.H"
+				>
+			</File>
+			<File
+				RelativePath=".\RENDER.C"
+				>
+			</File>
+			<File
+				RelativePath=".\RENDER.H"
+				>
+			</File>
+			<File
 				RelativePath=".\STARTUP.C"
 				>
 			</File>
@@ -207,6 +223,10 @@
 				>
 				<File
 					RelativePath=".\CLOCK.C"
+					>
+				</File>
+				<File
+					RelativePath=".\EDGE.C"
 					>
 				</File>
 				<File

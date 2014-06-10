@@ -72,9 +72,15 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   /*** Добавление объектов ***/
   /*for (i = 0; i < 30 * 30; i++)
     II2_AnimAddUnit(II2_CowUnitCreate());*/
+  /*II2_AnimAddUnit(II2_ClockUnitCreate());
+  II2_AnimAddUnit(II2_PicUnitCreate("II2_AND.bmp", "II2_XOR.bmp"));*/
+  //II2_AnimAddUnit(II2_EdgeUnitCreate(-0.2, -0.2, 2));
+  II2_AnimAddUnit(II2_CowUnitCreate());
+
+  //II2_AnimAddUnit(II2_EdgeUnitCreate(-0.5, 0.5, 2));
+  //II2_AnimAddUnit(II2_EdgeUnitCreate(0.5, 0, 2));
+  //II2_AnimAddUnit(II2_EdgeUnitCreate(0, 0.5, 3));
   II2_AnimAddUnit(II2_InfoUnitCreate());
-  II2_AnimAddUnit(II2_ClockUnitCreate());
-  II2_AnimAddUnit(II2_PicUnitCreate("II2_AND.bmp", "II2_XOR.bmp"));
 
   /* Запуск цикла обработки сообщений */
   while (GetMessage(&msg, NULL, 0, 0))

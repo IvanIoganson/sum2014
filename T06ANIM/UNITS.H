@@ -10,16 +10,19 @@
 #include "anim.h"
 
 /* Функция создания объекта анимации */
-ii2UNIT * II2_CowUnitCreate( VOID );
+ii2UNIT *II2_CowUnitCreate( VOID );
 
 /* Функция создания информационного объекта анимации */
-ii2UNIT * II2_InfoUnitCreate( VOID );
+ii2UNIT *II2_InfoUnitCreate( VOID );
 
 /* Функция создания объекта анимации. */
 ii2UNIT *II2_ClockUnitCreate( VOID );
 
 /* Функция создания объекта анимации. */
 ii2UNIT *II2_PicUnitCreate( CHAR *FNameAnd, CHAR *FNameXor );
+
+/* Функция создания объекта анимации. */
+ii2UNIT *II2_EdgeUnitCreate( DBL X, DBL Y, DBL Z );
 
 #endif /* __UNITS_H_ */
 
