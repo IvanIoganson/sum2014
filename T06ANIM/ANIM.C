@@ -8,6 +8,7 @@
 #include <time.h>
 
 #include "anim.h"
+#include "render.h"
 
 #pragma comment(lib, "winmm")
 
@@ -15,6 +16,8 @@
 
 /* Системный контекст анимации */
 static ii2ANIM II2_Anim;
+
+ii2CAMERA II2_RndCam;
 
 /* Данные для синхронизации по времени */
 static INT64
@@ -252,7 +255,8 @@ VOID II2_AnimRender( VOID )
   /* опрос на изменение состояний объектов */
   for (i = 0; i < II2_Anim.NumOfUnits; i++)
     II2_Anim.Units[i]->Response(II2_Anim.Units[i], &II2_Anim);
-
+  
+  CameraUnitRender(&II2_RndCam, &II2_Anim);
   /* рисование объектов */
   for (i = 0; i < II2_Anim.NumOfUnits; i++)
   {

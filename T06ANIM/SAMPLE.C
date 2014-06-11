@@ -56,6 +56,7 @@ static VOID CowUnitClose( ii2UNIT_COW *Unit, ii2ANIM *Ani )
  */
 static VOID CowUnitResponse( ii2UNIT_COW *Unit, ii2ANIM *Ani )
 {
+  MatrProjection( -II2_RndWp / 2, II2_RndWp / 2, -II2_RndHp / 2, II2_RndHp / 2, II2_RndProjDist, 1000 );
 } /* End of 'CowUnitResponse' function */
 
 /* Функция построения объекта анимации.
