@@ -30,7 +30,7 @@ typedef struct tagii2ANIM
   INT NumOfUnits;
  
   DBL JX, JY, JZ, JR, JU; /* Джостик */
-  INT JPOV;               /* Джостик */
+  INT JPOV, JButs[32];    /* Джостик */
 
   DBL MsWheel;            /* Колесо мыши */
   INT MsX, MsY, MsDeltaX, MsDeltaY; /* Местонахождение курсора и розность координат*/

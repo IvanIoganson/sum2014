@@ -118,13 +118,13 @@ POINT II2_WorldToScreen( VEC P )
  */
 VOID CameraUnitRender( ii2CAMERA *Unit, ii2ANIM *Ani )
 {
-  
-  //II2_RndMatrView.A[3][0]
+  II2_RndMatrWorld.A[3][0] -= Ani->JR / 10; 
+  II2_RndMatrWorld.A[3][1] += Ani->JZ / 10;
+  if (Ani-> == 0)
+    II2_RndMatrWorld.A[3][2] += 1;
+  else if (Ani->JPOV == 4)
+    II2_RndMatrWorld.A[3][2] -= 1;
   //II2_RndMatrWorld = MatrSumMatr(II2_RndMatrWorld, MatrRotate(Ani->JX * II2_PI / 10, 0, 0, 0));
-  
-  II2_RndMatrWorld.A[3][0] += Ani->JR / 10; 
-  II2_RndMatrWorld.A[3][1] -= Ani->JZ / 10;
-  II2_RndMatrWorld.A[3][2] += Ani->MsWheel / 10;
 
 } /* End of 'II2_CameraUnitRender' function */
 

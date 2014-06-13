@@ -144,7 +144,7 @@ VOID II2_AnimRender( VOID )
   INT i;
   LARGE_INTEGER li;
   POINT pt;
-  static JButs[32], JButsClick[32], JButsOld[32];
+  static JButsClick[32], JButsOld[32];
 
   /* Обновление ввода */
   GetKeyboardState(II2_Anim.Keys);
@@ -167,11 +167,11 @@ VOID II2_AnimRender( VOID )
       if (joyGetPosEx(JOYSTICKID1, &ji) == JOYERR_NOERROR)
       {
         /* Кнопки */
-        memcpy(JButsOld, JButs, sizeof(JButs));
+        memcpy(JButsOld, II2_Anim.JButs, sizeof(II2_Anim.JButs));
         for (i = 0; i < 32; i++)
-          JButs[i] = (ji.dwButtons >> i) & 1;
+          II2_Anim.JButs[i] = (ji.dwButtons >> i) & 1;
         for (i = 0; i < 32; i++)
-          JButsClick[i] = JButs[i] && !JButsOld[i];
+          JButsClick[i] = II2_Anim.JButs[i] && !JButsOld[i];
 
         /* Оси */
         II2_Anim.JX = II2_JOYST(X);
