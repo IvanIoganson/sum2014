@@ -12,7 +12,7 @@
 
 typedef struct tagMATR
 {
-  DBL A[4][4];
+  FLT A[4][4];
 } MATR;
 
 typedef struct tagVEC

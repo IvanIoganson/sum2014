@@ -87,7 +87,7 @@ ii2UNIT *II2_CowUnitCreate( VOID )
   Unit->Close = (VOID *)CowUnitClose;
   Unit->Response = (VOID *)CowUnitResponse;
   Unit->Render = (VOID *)CowUnitRender;
-  Unit->FN = "cow.object";
+  Unit->FN = "avent.object";
   return (ii2UNIT *)Unit;
 } /* End of 'II2_CowUnitCreate' function */
 

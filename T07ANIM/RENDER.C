@@ -223,7 +223,7 @@ VOID II2_ObjDraw( ii2OBJ *Obj, ii2ANIM *Ani )
 
   QuikSort(Obj->V, A, Obj->NumOfV );*/
 
-  srand(30);
+  //srand(30);
   for (i = 0; i < Obj->NumOfF; i++)
   {
     //INT n0 = A[Obj->F[i][0]], n1 = A[Obj->F[i][1]], n2 = A[Obj->F[i][2]];
@@ -235,7 +235,7 @@ VOID II2_ObjDraw( ii2OBJ *Obj, ii2ANIM *Ani )
         Obj->V[n2].Z < Ani->ProjDist)
       continue;*/
     glBegin(GL_TRIANGLES);
-      glColor3b(rand() % 256, rand() % 256, rand() % 256);
+      //glColor3b(rand() % 256, rand() % 256, rand() % 256);
       glVertex3d(V1.X, V1.Y, V1.Z);
       glVertex3d(V2.X, V2.Y, V2.Z);
       glVertex3d(V3.X, V3.Y, V3.Z);

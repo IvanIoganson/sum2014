@@ -9,6 +9,7 @@
 
 #include "anim.h"
 #include "render.h"
+#include "shader.h"
 
 /* Системный контекст анимации */
 static ii2ANIM II2_Anim;
@@ -188,8 +189,9 @@ VOID II2_AnimRender( VOID )
   LARGE_INTEGER li;
   POINT pt;
   static VEC cam = {5, 5, 5};
-  static DBL alf = 0;
-  static JButsClick[32], JButsOld[32];
+  static DBL alf = 0, time;
+  static JButsClick[32], JButsOld[32], loc;
+  static UINT II2_ShaderProg;
 
   /* Обновление ввода */
   GetKeyboardState(II2_Anim.Keys);
@@ -293,8 +295,8 @@ VOID II2_AnimRender( VOID )
   /* время "прошлого" кадра */
   TimeOld = li.QuadPart;
 
-  cam.X += II2_Anim.JX / 10;
-  cam.Y -= II2_Anim.JY / 10;
+  cam.X += (II2_Anim.JX) / 10;
+  cam.Y -= (II2_Anim.JY) / 10;
   cam.Z += II2_Anim.MsWheel / II2_PI;
   
   //II2_Anim.MatrView = II2_VieverCamera(VecSet(xcam, ycam, zcam), VecSet(0, 0, 0), VecSet(0, 1, 0));
@@ -313,7 +315,25 @@ VOID II2_AnimRender( VOID )
 
   II2_Anim.MatrWorldViewProj = MatrMulMatr(MatrMulMatr(II2_Anim.MatrWorld, II2_Anim.MatrView), II2_Anim.MatrProjection);
 
-  glLoadMatrixd(&II2_Anim.MatrWorldViewProj.A[0][0]);
+  glLoadMatrixf(&II2_Anim.MatrWorldViewProj.A[0][0]);
+  glEnable(GL_DEPTH_TEST);
+
+  time += II2_Anim.GlobalDeltaTime;
+  if (time > 1)
+  {
+    time = 0;
+    II2_ShadProgClose(II2_ShaderProg);
+    II2_ShaderProg = II2_ShadProgInit("a.vert", "a.frag");
+  }
+ 
+  /* выбор программы шейдеров вывода примитивов */
+  glUseProgram(II2_ShaderProg);
+  loc = glGetUniformLocation(II2_ShaderProg, "Matr");
+  if (loc != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, II2_Anim.MatrWorldViewProj.A[0]);
+  loc = glGetUniformLocation(II2_ShaderProg, "Time");
+  if (loc != -1)
+    glUniform1f(loc, II2_Anim.Time);
 
   /* рисование объектов */
   for (i = 0; i < II2_Anim.NumOfUnits; i++)
