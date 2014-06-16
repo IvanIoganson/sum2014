@@ -10,9 +10,10 @@
 #include "anim.h"
 #include "render.h"
 #include "shader.h"
+#include "geom.h"
 
 /* Системный контекст анимации */
-static ii2ANIM II2_Anim;
+ii2ANIM II2_Anim;
 
 /* Данные для синхронизации по времени */
 static INT64
@@ -191,7 +192,7 @@ VOID II2_AnimRender( VOID )
   static VEC cam = {5, 5, 5};
   static DBL alf = 0, time;
   static JButsClick[32], JButsOld[32], loc;
-  static UINT II2_ShaderProg;
+  MATR WVP;
 
   /* Обновление ввода */
   GetKeyboardState(II2_Anim.Keys);
@@ -335,11 +336,61 @@ VOID II2_AnimRender( VOID )
   if (loc != -1)
     glUniform1f(loc, II2_Anim.Time);
 
+  glClearColor(0, 0, 1, 0);
+
   /* рисование объектов */
   for (i = 0; i < II2_Anim.NumOfUnits; i++)
     II2_Anim.Units[i]->Render(II2_Anim.Units[i], &II2_Anim);
 
-  glBegin(GL_LINE);
+    /* оси и позиция наблюдателя */
+  /*II2_Anim.MatrWorld = MatrIdentify();
+  II2_Anim.MatrView =
+    II2_VieverCamera(
+      MatrMulVec(MatrRotateZ(II2_Anim.JY * 180), MatrMulVec(MatrRotateY(II2_Anim.JR * 180), VecSet(25, 25, 25))),
+      VecSet(0, 0, 0), VecSet(0, 1, 0));*/
+  WVP = MatrMulMatr(II2_Anim.MatrWorld, MatrMulMatr(II2_Anim.MatrView, II2_Anim.MatrProjection));
+  glLoadMatrixf(WVP.A[0]);
+
+  /*glLineWidth(3);
+  glBegin(GL_LINES);
+    glColor3d(1, 0.5, 0.5);
+    glVertex3d(-3, 0, 0);
+    glVertex4d(1, 0, 0, 0);
+    glColor3d(0.5, 1, 0.5);
+    glVertex3d(0, -3, 0);
+    glVertex4d(0, 1, 0, 0);
+    glColor3d(0.5, 0.5, 1);
+    glVertex3d(0, 0, -3);
+    glVertex4d(0, 0, 1, 0);
+  glEnd();
+  glColorMask(1, 1, 1, 0);
+  for (i = -3; i < 30; i++)
+  {
+    glBegin(GL_TRIANGLE_STRIP);
+    glVertex3d(-0.1, -0.1, i);
+    glVertex3d(-0.1,  0.1, i);
+    glVertex3d( 0.1, -0.1, i);
+    glVertex3d( 0.1,  0.1, i);
+    glEnd();
+  }*/
+
+  /* Рисуем примитивы */
+  time += II2_Anim.GlobalDeltaTime;
+  if (time > 1)
+  {
+    time = 0;
+    II2_ShadProgClose(II2_ShaderProg);
+    II2_ShaderProg = II2_ShadProgInit("a.vert", "a.frag");
+  }
+
+
+  glLineWidth(1);
+  if (II2_Anim.Keys['Q'])
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  else
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  /*glBegin(GL_LINE);
     glColor3d(1, 0, 0);
     glVertex3d(0, 0, 0);
     glVertex4d(1, 0, 0, 0);
@@ -351,7 +402,7 @@ VOID II2_AnimRender( VOID )
     glColor3d(0, 0, 1);
     glVertex3d(0, 0, 0);
     glVertex4d(0, 0, 1, 0);
-  glEnd();
+  glEnd();*/
 
   FrameCounter++;
 } /* End of 'II2_AnimRender' function */

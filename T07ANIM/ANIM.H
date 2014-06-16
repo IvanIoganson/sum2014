@@ -65,6 +65,8 @@ typedef struct tagii2ANIM
   BYTE Keys[256];     /* Сотояние клавиш клавиатуры и мыши */
 } ii2ANIM;
 
+extern ii2ANIM II2_Anim;
+
 /* Базовые поля объекта анимации:
  * - размер структуры для наследования
  *     INT Size;

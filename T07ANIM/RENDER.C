@@ -71,9 +71,9 @@ VOID CameraUnitRender( ii2CAMERA *Unit, ii2ANIM *Ani )
   Ani->MatrWorld.A[3][0] -= Ani->JR / 10; 
   Ani->MatrWorld.A[3][1] += Ani->JZ / 10;
   if (Ani->JPOV == 0)
-    Ani->MatrWorld.A[3][2] += 1;
-  else if (Ani->JPOV == 4)
     Ani->MatrWorld.A[3][2] -= 1;
+  else if (Ani->JPOV == 4)
+    Ani->MatrWorld.A[3][2] += 1;
   //Ani->MatrWorld = MatrSumMatr(Ani->MatrWorld, MatrRotate(Ani->JX * II2_PI / 10, 0, 0, 0));
 
 } /* End of 'II2_CameraUnitRender' function */

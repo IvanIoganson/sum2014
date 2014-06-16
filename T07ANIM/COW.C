@@ -11,13 +11,14 @@
 
 #include "anim.h"
 #include "render.h"
+#include "geom.h"
 
 /* Структура описания объекта анимации */
 typedef struct tagii2UNIT_COW
 {
   II2_UNIT_BASE_FIELDS; /* Включение базовых полей */
   CHAR *FN;
-  ii2OBJ Obj;
+  ii2GEOM Obj;
 } ii2UNIT_COW;
 
 /* Функция инициализации объекта анимации.
@@ -30,7 +31,7 @@ typedef struct tagii2UNIT_COW
  */
 static VOID CowUnitInit( ii2UNIT_COW *Unit, ii2ANIM *Ani )
 {
-  II2_ObjLoad( &Unit->Obj, Unit->FN);
+  II2_GeomLoad( &Unit->Obj, Unit->FN);
 } /* End of 'CowUnitInit' function */
 
 /* Функция деинициализации объекта анимации.
@@ -43,7 +44,7 @@ static VOID CowUnitInit( ii2UNIT_COW *Unit, ii2ANIM *Ani )
  */
 static VOID CowUnitClose( ii2UNIT_COW *Unit, ii2ANIM *Ani )
 {
-  II2_ObjFree(&Unit->Obj);
+  II2_GeomFree(&Unit->Obj);
 } /* End of 'CowUnitClose' function */
 
 /* Функция обновления межкадровых параметров объекта анимации.
@@ -68,7 +69,7 @@ static VOID CowUnitResponse( ii2UNIT_COW *Unit, ii2ANIM *Ani )
  */
 static VOID CowUnitRender( ii2UNIT_COW *Unit, ii2ANIM *Ani )
 {
-  II2_ObjDraw( &Unit->Obj, Ani );
+  II2_GeomDraw(&Unit->Obj);
 } /* End of 'II2_AnimUnitRender' function */
 
 /* Функция создания объекта анимации.
@@ -87,7 +88,7 @@ ii2UNIT *II2_CowUnitCreate( VOID )
   Unit->Close = (VOID *)CowUnitClose;
   Unit->Response = (VOID *)CowUnitResponse;
   Unit->Render = (VOID *)CowUnitRender;
-  Unit->FN = "avent.object";
+  Unit->FN = "house1.object";
   return (ii2UNIT *)Unit;
 } /* End of 'II2_CowUnitCreate' function */
 

@@ -198,11 +198,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\GEOM.H"
+					>
+				</File>
+				<File
+					RelativePath=".\GEOMELOAD.C"
+					>
+				</File>
+				<File
+					RelativePath=".\GEOMHAND.C"
+					>
+				</File>
+				<File
 					RelativePath=".\MATR.C"
 					>
 				</File>
 				<File
 					RelativePath=".\MATR.H"
+					>
+				</File>
+				<File
+					RelativePath=".\PRIM.C"
 					>
 				</File>
 				<File

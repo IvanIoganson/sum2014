@@ -31,6 +31,14 @@ MATR MatrMulMatr( MATR M1, MATR M2 )
   return r;
 }/* End of 'MatrMulMatr' function */
 
+MATR MatrRotateZ( DBL Angle )
+{
+  DBL co = cos(Angle), si = sin(Angle);
+  MATR m = {{{co, si, 0, 0}, {-si, co, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}};
+
+  return m;
+}
+
 MATR MatrRotateY( DBL Angle )
 {
   DBL co = cos(Angle), si = sin(Angle);

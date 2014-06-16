@@ -9,6 +9,8 @@
 
 #include "def.h"
 
+extern UINT II2_ShaderProg;
+
 /* Функция инициализации шейдерной программы */
 UINT II2_ShadProgInit( CHAR *VSFileName, CHAR *FSFileName );
 
