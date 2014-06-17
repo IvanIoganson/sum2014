@@ -136,7 +136,7 @@ static CHAR
  *       CHAR *FileName;
  * бнгбпюыюелне гмювемхе: мЕР.
 */
-static VOID LoadMaterials( ii2GEOM *G, CHAR *FileName )
+VOID LoadMaterials( ii2GEOM *G, CHAR *FileName )
 {
   FILE *F;
   ii2MATERIAL DefMat, Mat;

@@ -68,12 +68,12 @@ MATR II2_VieverCamera( VEC Loc, VEC At, VEC Upaprox )
  */
 VOID CameraUnitRender( ii2CAMERA *Unit, ii2ANIM *Ani )
 {
-  Ani->MatrWorld.A[3][0] -= Ani->JR / 10; 
+  /*Ani->MatrWorld.A[3][0] -= Ani->JR / 10; 
   Ani->MatrWorld.A[3][1] += Ani->JZ / 10;
   if (Ani->JPOV == 0)
     Ani->MatrWorld.A[3][2] -= 1;
   else if (Ani->JPOV == 4)
-    Ani->MatrWorld.A[3][2] += 1;
+    Ani->MatrWorld.A[3][2] += 1;*/
   //Ani->MatrWorld = MatrSumMatr(Ani->MatrWorld, MatrRotate(Ani->JX * II2_PI / 10, 0, 0, 0));
 
 } /* End of 'II2_CameraUnitRender' function */
@@ -196,6 +196,97 @@ VOID QuikSort( VEC *V, INT *A, INT N )
   QuikSort(V + i, A, N - i);
 }
 
+/* Cameras getting matrix function.
+* ARGUMENTS: None.
+* RETURNS: 
+*   (MATR) Camera matrix.
+*/
+static MATR II2_RndCameraGetMatrix( ii2CAMERA *Cam )
+{
+  MATR RetMatr = 
+  {
+    {
+      { Cam->Dir.X  , Cam->Dir.Y  , Cam->Dir.Z  , 0 },
+      { Cam->Up.X   , Cam->Up.Y   , Cam->Up.Z   , 0 },
+      { Cam->Right.X, Cam->Right.Y, Cam->Right.Z, 0 },
+      {                  0,                  0,                 0 , 1 }
+    }
+  };
+  return RetMatr;
+} /* End of 'II2_RndCameraGetMatrix' funciton */
+
+/* Cameras normalizing vectors function.
+* ARGUMENTS: None.
+* RETURNS: None.
+*/
+static VOID II2_RndCameraNormalize( ii2CAMERA *Cam )
+{
+  Cam->At = VecNormalize(Cam->At);
+  Cam->Dir = VecNormalize(Cam->Dir);
+  Cam->Up = VecNormalize(Cam->Up);
+  Cam->Right = VecNormalize(Cam->Right);
+} /* End of 'II2_RndCameraGetMatrix' funciton */
+
+/* Camera move by Dir-axes properties 
+ * ARGUMENTS:
+ *   - Distance to move:
+ *       DBL Coef;  
+ * RETURNS: None.
+ */
+VOID II2_RndCameraMoveDir( ii2CAMERA *Cam, DBL Coef )
+{
+  Cam->Dir = VecNormalize(VecSubVec(Cam->At, Cam->Loc));
+  Cam->Loc = VecAddVec(Cam->Loc, VecMulNum(Cam->Dir, Coef));
+  Cam->At = VecAddVec(Cam->At, VecMulNum(Cam->Dir, Coef));
+}  /* End of 'II2_RndCameraMoveByDir' funciton */
+
+/* Camera move by Right-Axes function.
+ * ARGUMENTS:
+ *   - Distance to move:
+ *       DBL Coef;  
+ * RETURNS: None.
+ */
+VOID II2_RndCameraMoveRight( ii2CAMERA *Cam, DBL Coef )
+{
+  Cam->Dir = VecSubVec(Cam->At, Cam->Loc);
+  Cam->Right = VecCrossVec(Cam->Dir, Cam->Up);
+  Cam->Loc = VecAddVec(Cam->Loc, VecMulNum(VecNormalize(Cam->Right), Coef));
+  Cam->At = VecAddVec(Cam->At, VecMulNum(VecNormalize(Cam->Right), Coef));
+}  /* End of 'II2_RndCameraMoveByDir' funciton */
+
+/* Camera move by Up-Axes function.
+ * ARGUMENTS:
+ *   - Distance to move:
+ *       DBL Coef;  
+ * RETURNS: None.
+ */
+VOID II2_RndCameraMoveUp( ii2CAMERA *Cam, DBL Coef )
+{
+  Cam->Loc = VecAddVec(Cam->Loc, VecMulNum(VecNormalize(Cam->Up), Coef));
+  Cam->At = VecAddVec(Cam->At, VecMulNum(VecNormalize(Cam->Up), Coef));
+}  /* End of 'II2_RndCameraMoveByDir' funciton */
+
+/* Camera rotation by camera-axes-Up function.
+ * ARGUMENTS:
+ *   - Angle:
+ *       DBL Angle;
+ * RETURNS: None.
+ */
+VOID II2_RndCameraRotateUp( ii2CAMERA *Cam, DBL Angle )
+{
+  MATR RotMat;
+
+  Cam->Dir = VecSubVec(Cam->At, Cam->Loc);
+  Cam->Right = VecCrossVec(VecNormalize(Cam->Dir), Cam->Up);
+
+  II2_RndCameraNormalize(Cam);
+
+  RotMat = II2_RndCameraGetMatrix(Cam);
+  RotMat = MatrMulMatr(MatrRotateY(Angle), RotMat);
+
+  Cam->At = VecAddVec(Cam->Loc, VecSet(RotMat.A[0][0], RotMat.A[0][1], RotMat.A[0][2]));
+}  /* End of 'II2_RndCameraRotateUp' funciton */
+
 /* Функция отрисовки геометрического объекта.
  * АРГУМЕНТЫ:
  *   - указатель на структуру для загружаемой геометрии:
@@ -243,5 +334,49 @@ VOID II2_ObjDraw( ii2OBJ *Obj, ii2ANIM *Ani )
   }
   //free(A);
 } /* End of 'Ani->ObjDraw' function */
+
+/* Camera rotation by camera-axes-right function.
+* ARGUMENTS:
+*   - Angle:
+*       DBL Angle;
+* RETURNS: None.
+*/
+VOID II2_RndCameraRotateRight( ii2CAMERA *Cam, DBL Angle )
+{
+  MATR RotMat;
+  /*
+  if (Angle == 0)
+    return;
+  */
+  Cam->Dir = VecSubVec(Cam->At, Cam->Loc);
+  Cam->Right = VecCrossVec(VecNormalize(Cam->Dir), Cam->Up);
+
+  II2_RndCameraNormalize(Cam);
+
+  RotMat = II2_RndCameraGetMatrix(Cam);
+  RotMat = MatrMulMatr(MatrRotateZ(Angle), RotMat);
+
+  Cam->At = VecAddVec(Cam->Loc, VecSet(RotMat.A[0][0], RotMat.A[0][1], RotMat.A[0][2]));
+}  /* End of 'II2_RndCameraRotateRight' funciton */
+
+/* Camera rotation by camera-axes-dir function.
+* ARGUMENTS:
+*   - Angle:
+*       DBL Angle;
+* RETURNS: None.
+*/
+VOID II2_RndCameraRotateDir( ii2CAMERA *Cam, DBL Angle )
+{
+  MATR RotMat;
+
+  Cam->Dir = VecSubVec(Cam->At, Cam->Loc);
+  Cam->Right = VecCrossVec(VecNormalize(Cam->Dir), Cam->Up);
+  II2_RndCameraNormalize(Cam);
+
+  RotMat = II2_RndCameraGetMatrix(Cam);
+  RotMat = MatrMulMatr(MatrRotateX(Angle), RotMat);
+
+  Cam->At = VecAddVec(Cam->Loc, VecSet(RotMat.A[0][0], RotMat.A[0][1], RotMat.A[0][2]));
+}  /* End of 'II2_RndCameraRotateDir' funciton */
 
 /* END OF 'RENDER.C' FILE */

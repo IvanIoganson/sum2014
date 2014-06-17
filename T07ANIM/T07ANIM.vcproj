@@ -257,6 +257,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\HeighMap.C"
+						>
+					</File>
+					<File
+						RelativePath=".\PLANE.C"
+						>
+					</File>
+					<File
 						RelativePath=".\UNIT.C"
 						>
 					</File>

@@ -15,6 +15,10 @@
 /* Системный контекст анимации */
 ii2ANIM II2_Anim;
 
+ii2PRIM II2_Map;
+
+#define II2_HEIGHT_MAP 30
+
 /* Данные для синхронизации по времени */
 static INT64
   TimeFreq,  /* единиц измерения в секунду */
@@ -89,6 +93,9 @@ BOOL II2_AnimInit( HWND hWnd )
     memset(&II2_Anim, 0, sizeof(ii2ANIM));
     return FALSE;
   }
+
+  if(!II2_PrimCreateHeightField( &II2_Map, "hm6.bmp", II2_HEIGHT_MAP, 1 ))
+    return FALSE;
 
   return TRUE;
 } /* End of 'II2_AnimInit' function */
@@ -189,9 +196,10 @@ VOID II2_AnimRender( VOID )
   INT i;
   LARGE_INTEGER li;
   POINT pt;
-  static VEC cam = {5, 5, 5};
-  static DBL alf = 0, time;
+  static VEC cam = {0, 0, 5}, dir = {0, 0, 1}, to = {0, 0, 4};
+  static DBL alf = 0, time, theta, phi = 0, r;
   static JButsClick[32], JButsOld[32], loc;
+  static MATR M;
   MATR WVP;
 
   /* Обновление ввода */
@@ -296,11 +304,29 @@ VOID II2_AnimRender( VOID )
   /* время "прошлого" кадра */
   TimeOld = li.QuadPart;
 
-  cam.X += (II2_Anim.JX) / 10;
-  cam.Y -= (II2_Anim.JY) / 10;
-  cam.Z += II2_Anim.MsWheel / II2_PI;
-  
-  //II2_Anim.MatrView = II2_VieverCamera(VecSet(xcam, ycam, zcam), VecSet(0, 0, 0), VecSet(0, 1, 0));
+  phi -= II2_Anim.JR / 30;
+
+  dir = VecAddVec(VecMulNum(VecSet(0, 0, 1), cos(phi)), VecMulNum(VecSet(1, 0, 0), sin(phi)));
+  cam.X += VecMulNum(dir, II2_Anim.JX / 2).X;
+  cam.Y -= II2_Anim.JY / 2;
+  cam.Z += VecMulNum(dir, II2_Anim.JZ / 2).Z;
+  /*theta += II2_Anim.JZ * II2_PI / 5; 
+  phi += II2_Anim.JR * II2_PI / 5;
+  r += II2_Anim.MsWheel / II2_PI;*/
+  to = VecAddVec(cam, dir);
+  //to = to1;
+  //M = /*MatrSumMatr(*/MatrMulMatr(MatrTranslate(-to.X, 0, -to.Z), MatrRotateY(II2_Anim.JR / 5))
+    /*MatrTranslate(to.X, 0, to.Z))*/
+
+  //to = MatrMulVec(M, to);
+  /*to = to1;
+  to.Z += sin(phi) * 2 * II2_PI;
+  to.X += cos(phi) * 2 * II2_PI;*/
+
+  /*cam.X += r * sin(theta) * cos(phi);
+  cam.Y += r * sin(theta) * sin(phi);
+  cam.Z += r * cos(phi);*/
+  II2_Anim.MatrView = II2_VieverCamera(VecSet(cam.X, cam.Y, cam.Z), VecSet(to.X, to.Y, to.Z), VecSet(0, 1, 0));
 
   /* очистка фона */
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -308,11 +334,11 @@ VOID II2_AnimRender( VOID )
   /* опрос на изменение состояний объектов */
   for (i = 0; i < II2_Anim.NumOfUnits; i++)
     II2_Anim.Units[i]->Response(II2_Anim.Units[i], &II2_Anim);
-  
+
   alf = II2_Anim.Time * II2_PI;
   /*II2_Anim.MatrWorld = MatrRotateY(alf);*/
-  II2_Anim.MatrWorld = MatrMulMatr(MatrRotateX(II2_Anim.JZ * II2_PI), MatrRotateY(II2_Anim.JR * II2_PI));
-  II2_Anim.MatrView = II2_VieverCamera(VecSet(cam.X, cam.Y, cam.Z), VecSet(cam.X, cam.Y, 0), VecSet(0, 1, 0));
+  //II2_Anim.MatrWorld = MatrMulMatr(MatrRotateX(II2_Anim.JZ * II2_PI), MatrRotateY(II2_Anim.JR * II2_PI));
+  //II2_Anim.MatrView = II2_VieverCamera(VecSet(cam.X, cam.Y, cam.Z), VecSet(cam.X, cam.Y, 0), VecSet(0, 1, 0));
 
   II2_Anim.MatrWorldViewProj = MatrMulMatr(MatrMulMatr(II2_Anim.MatrWorld, II2_Anim.MatrView), II2_Anim.MatrProjection);
 
@@ -336,13 +362,15 @@ VOID II2_AnimRender( VOID )
   if (loc != -1)
     glUniform1f(loc, II2_Anim.Time);
 
-  glClearColor(0, 0, 1, 0);
+  glClearColor(0, 0, 0, 0);
 
+  II2_PrimDraw(&II2_Map);
+  
   /* рисование объектов */
   for (i = 0; i < II2_Anim.NumOfUnits; i++)
     II2_Anim.Units[i]->Render(II2_Anim.Units[i], &II2_Anim);
 
-    /* оси и позиция наблюдателя */
+    /* оси и позициянаблюдателя */
   /*II2_Anim.MatrWorld = MatrIdentify();
   II2_Anim.MatrView =
     II2_VieverCamera(
@@ -351,38 +379,7 @@ VOID II2_AnimRender( VOID )
   WVP = MatrMulMatr(II2_Anim.MatrWorld, MatrMulMatr(II2_Anim.MatrView, II2_Anim.MatrProjection));
   glLoadMatrixf(WVP.A[0]);
 
-  /*glLineWidth(3);
-  glBegin(GL_LINES);
-    glColor3d(1, 0.5, 0.5);
-    glVertex3d(-3, 0, 0);
-    glVertex4d(1, 0, 0, 0);
-    glColor3d(0.5, 1, 0.5);
-    glVertex3d(0, -3, 0);
-    glVertex4d(0, 1, 0, 0);
-    glColor3d(0.5, 0.5, 1);
-    glVertex3d(0, 0, -3);
-    glVertex4d(0, 0, 1, 0);
-  glEnd();
-  glColorMask(1, 1, 1, 0);
-  for (i = -3; i < 30; i++)
-  {
-    glBegin(GL_TRIANGLE_STRIP);
-    glVertex3d(-0.1, -0.1, i);
-    glVertex3d(-0.1,  0.1, i);
-    glVertex3d( 0.1, -0.1, i);
-    glVertex3d( 0.1,  0.1, i);
-    glEnd();
-  }*/
-
   /* Рисуем примитивы */
-  time += II2_Anim.GlobalDeltaTime;
-  if (time > 1)
-  {
-    time = 0;
-    II2_ShadProgClose(II2_ShaderProg);
-    II2_ShaderProg = II2_ShadProgInit("a.vert", "a.frag");
-  }
-
 
   glLineWidth(1);
   if (II2_Anim.Keys['Q'])

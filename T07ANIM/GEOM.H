@@ -125,4 +125,9 @@ VOID II2_GeomDraw( ii2GEOM *G );
 /* Функция загрузки геометрического объекта */
 BOOL II2_GeomLoad( ii2GEOM *G, CHAR *FileName );
 
+/* Функция загрузки материала.*/
+VOID LoadMaterials( ii2GEOM *G, CHAR *FileName );
+
+/* Функция создания карты высот. */
+BOOL II2_PrimCreateHeightField( ii2PRIM *P, CHAR *FileName, FLT Height, FLT Scale );
 #endif /*__GEOM_H_*/

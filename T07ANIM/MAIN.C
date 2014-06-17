@@ -10,6 +10,7 @@
 
 #include "def.h"
 #include "units.h"
+#include "geom.h"
 #include "render.h"
 
 #define WND_CLASS_NAME "My Window Class Name"
@@ -74,7 +75,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   /*** Добавление объектов ***/
   II2_AnimAddUnit(II2_CowUnitCreate());
   II2_AnimAddUnit(II2_InfoUnitCreate());
-
+  //II2_AnimAddUnit(II2_PlaneUnitCreate(0, "grass.bmp"));
+  
   /* Запуск цикла обработки сообщений */
   while (TRUE)
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))

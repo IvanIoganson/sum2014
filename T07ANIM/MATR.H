@@ -86,7 +86,28 @@ __inline DBL MatrDeterm( MATR M )
                               M.A[3][0], M.A[3][1], M.A[3][2]);
 } /* End of 'MatrDeterm' function */
 
+__inline MATR MatrTranslate( DBL Dx, DBL Dy, DBL Dz )
+{
+  MATR m = II2_UNIT_MATR;
+
+  m.A[3][0] = Dx;
+  m.A[3][1] = Dy;
+  m.A[3][2] = Dz;
+  return m;
+} /* End of 'MatrTranslate' function */
+
 __inline MATR MatrTranspose( MATR M )
+{
+  INT i, j;
+  MATR r;
+
+  for (i = 0; i < 4; i++)
+    for (j = 0; j < 4; j++)
+      r.A[i][j] = M.A[j][i];
+  return r;
+} /* End of 'MatrTranspose' function */
+
+/*__inline MATR VieverRotateY( VEC Loc, Vec At )
 {
   INT i, j;
   MATR r;

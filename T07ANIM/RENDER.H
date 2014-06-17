@@ -38,6 +38,9 @@ VOID II2_ObjDraw( ii2OBJ *Obj, ii2ANIM *Ani );
 /* Функция преобразования из мировой системы коорлинат в кадр. */
 MATR II2_VieverCamera( VEC Loc, VEC At, VEC Upaprox );
 
+/* Camera rotation by camera-axes-Up function. */
+VOID II2_RndCameraRotateUp( ii2CAMERA *Cam, DBL Angle );
+
 #endif /* __RENDER_H_ */
 
 /* END OF 'RENDER.H' FILE */

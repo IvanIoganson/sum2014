@@ -9,6 +9,13 @@
 
 #include "anim.h"
 
+typedef struct tagii2PLANE
+{
+  II2_UNIT_BASE_FIELDS;
+  DBL Y;
+  UINT TexNo;
+} ii2PLANE;
+
 /* Функция создания объекта анимации */
 ii2UNIT *II2_CowUnitCreate( VOID );
 
@@ -23,6 +30,9 @@ ii2UNIT *II2_PicUnitCreate( CHAR *FNameAnd, CHAR *FNameXor );
 
 /* Функция создания объекта анимации. */
 ii2UNIT *II2_EdgeUnitCreate( DBL X, DBL Y, DBL Z );
+
+/* Функция создания объекта анимации. */
+ii2UNIT *II2_PlaneUnitCreate( DBL Y, CHAR *FN );
 
 #endif /* __UNITS_H_ */
 
